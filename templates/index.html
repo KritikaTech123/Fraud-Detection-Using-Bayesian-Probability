@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bayesian Fraud Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">Bayesian Fraud Detection</div>
+      <h1>Estimate fraud probability from transaction anomalies.</h1>
+      <p class="subtitle">
+        This app applies Bayes' theorem to transaction signals such as unusual amount, odd hour, new merchant,
+        foreign location, rapid repeats, and device mismatch to estimate the probability of fraud.
+      </p>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Transaction Pattern Inputs</h2>
+        <form method="post">
+          <div class="field-grid">
+            <div>
+              <label for="prior_fraud_rate">Prior fraud rate (%)</label>
+              <input id="prior_fraud_rate" name="prior_fraud_rate" type="number" step="0.1" min="0.1" max="99.9" value="{{ form_values.prior_fraud_rate }}">
+            </div>
+            <div>
+              <label for="transaction_amount">Transaction amount</label>
+              <input id="transaction_amount" name="transaction_amount" type="number" step="0.01" min="0" value="{{ form_values.transaction_amount }}">
+            </div>
+            <div>
+              <label for="typical_amount">Typical customer amount</label>
+              <input id="typical_amount" name="typical_amount" type="number" step="0.01" min="0.01" value="{{ form_values.typical_amount }}">
+            </div>
+            <div>
+              <label for="transaction_hour">Transaction hour (0-23)</label>
+              <input id="transaction_hour" name="transaction_hour" type="number" step="1" min="0" max="23" value="{{ form_values.transaction_hour }}">
+            </div>
+          </div>
+
+          <div class="checks">
+            {% for key, rule in anomaly_rules.items() %}
+              <label class="check">
+                <input type="checkbox" name="{{ key }}" value="1" {% if form_values[key] %}checked{% endif %}>
+                <span>{{ rule.label }}</span>
+              </label>
+            {% endfor %}
+          </div>
+
+          <div class="actions">
+            <button type="submit">Calculate fraud probability</button>
+            <p class="hint">Checked anomalies are treated as evidence in a naive Bayes update.</p>
+          </div>
+        </form>
+      </section>
+
+      <aside class="card result">
+        <h2>Result</h2>
+        {% if result %}
+          <div class="score">
+            <span class="pill">{{ result.risk_level }}</span>
+            <strong>{{ result.probability_percent }}%</strong>
+            <div>Estimated probability of fraud</div>
+          </div>
+
+          <p class="empty">Posterior odds are calculated as prior odds multiplied by the likelihood ratio for each active anomaly.</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Active anomaly</th>
+                <th>Likelihood ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in result.evidence %}
+                <tr>
+                  <td>{{ item.label }}</td>
+                  <td>{{ item.likelihood_ratio }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="score">
+            <span class="pill">Ready</span>
+            <strong>0%</strong>
+            <div>Submit a transaction to calculate the fraud probability</div>
+          </div>
+          <p class="empty">Start with a prior fraud rate and mark the suspicious patterns that apply to the transaction.</p>
+        {% endif %}
+      </aside>
+    </div>
+
+    <p class="foot">This is a lightweight demo, not a production fraud model.</p>
+  </div>
+</body>
+</html>
