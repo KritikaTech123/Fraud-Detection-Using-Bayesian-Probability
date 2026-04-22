@@ -43,7 +43,7 @@
     <div class="grid" id="calculator">
       <section class="card">
         <h2>Transaction Pattern Inputs</h2>
-        <form method="post">
+        <form method="post" id="riskForm">
           <div class="field-grid">
             <div>
               <label for="prior_fraud_rate">Prior fraud rate (%)</label>
@@ -73,7 +73,10 @@
           </div>
 
           <div class="actions">
-            <button type="submit">Calculate fraud probability</button>
+            <button type="submit" id="submitBtn">
+              <span class="btn-text">Calculate fraud probability</span>
+              <span class="btn-loader" aria-hidden="true"></span>
+            </button>
             <p class="hint">Checked anomalies are treated as evidence in a naive Bayes update.</p>
           </div>
         </form>
@@ -195,6 +198,15 @@
           `${resultPayload.probability},${resultPayload.risk_level},${resultPayload.prior_fraud_rate},${resultPayload.transaction_amount},${resultPayload.typical_amount},${resultPayload.transaction_hour}`
         ];
         downloadFile(rows.join("\n"), "bayesian_fraud_result.csv");
+      });
+    }
+
+    const riskForm = document.getElementById("riskForm");
+    const submitBtn = document.getElementById("submitBtn");
+    if (riskForm && submitBtn) {
+      riskForm.addEventListener("submit", () => {
+        submitBtn.classList.add("is-loading");
+        submitBtn.disabled = true;
       });
     }
   </script>

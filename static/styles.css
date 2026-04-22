@@ -216,6 +216,10 @@ input[type="number"] {
 }
 
 button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   border: none;
   border-radius: 999px;
   padding: 13px 18px;
@@ -230,6 +234,35 @@ button {
 
 button:hover {
   transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.9;
+  cursor: wait;
+}
+
+.btn-loader {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  display: none;
+}
+
+button.is-loading .btn-loader {
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+}
+
+button.is-loading .btn-text {
+  opacity: 0.88;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .ghost {
@@ -391,5 +424,59 @@ th {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+
+  .wrap {
+    width: calc(100% - 20px);
+    padding: 24px 0 44px;
+  }
+
+  .card {
+    border-radius: 20px;
+    padding: 18px;
+  }
+
+  .hero {
+    margin-bottom: 18px;
+  }
+
+  .hero-badges {
+    margin-top: 14px;
+  }
+
+  .download-row {
+    width: 100%;
+  }
+
+  .download-row .ghost {
+    width: 100%;
+  }
+
+  .score strong {
+    font-size: 2.15rem;
+  }
+}
+
+@media (max-width: 520px) {
+  h1 {
+    font-size: clamp(1.6rem, 10vw, 2.35rem);
+    line-height: 1.02;
+  }
+
+  .menu {
+    width: 100%;
+  }
+
+  .menu a {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  #submitBtn {
+    width: 100%;
   }
 }
