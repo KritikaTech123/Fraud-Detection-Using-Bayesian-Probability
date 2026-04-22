@@ -4,20 +4,43 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bayesian Fraud Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <div class="eyebrow">Bayesian Fraud Detection</div>
-      <h1>Estimate fraud probability from transaction anomalies.</h1>
-      <p class="subtitle">
-        This app applies Bayes' theorem to transaction signals such as unusual amount, odd hour, new merchant,
-        foreign location, rapid repeats, and device mismatch to estimate the probability of fraud.
-      </p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#home">FraudSense Bayes</a>
+      <nav class="menu">
+        <a href="#home">Home</a>
+        <a href="#calculator">Calculator</a>
+        <a href="#method">Method</a>
+        <a href="#download">Download</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="grid">
+  <div class="wrap">
+    <section class="hero" id="home">
+      <div class="eyebrow">Bayesian Fraud Detection</div>
+      <h1>
+        Detect risky transactions with
+        <span class="headline-glow">probability-driven intelligence.</span>
+      </h1>
+      <p class="subtitle">
+        A simple web app that applies Bayes' theorem to anomaly patterns such as unusual amounts, odd hours,
+        new merchants, foreign locations, rapid repeats, and device mismatch signals.
+      </p>
+      <div class="hero-badges">
+        <span>Live scoring</span>
+        <span>Transparent evidence</span>
+        <span>CSV download</span>
+      </div>
+    </section>
+
+    <div class="grid" id="calculator">
       <section class="card">
         <h2>Transaction Pattern Inputs</h2>
         <form method="post">
@@ -83,6 +106,11 @@
               {% endfor %}
             </tbody>
           </table>
+
+          <div class="download-row" id="download">
+            <button type="button" class="ghost" id="downloadResultBtn">Download result CSV</button>
+            <button type="button" class="ghost" id="downloadSampleBtn">Download sample input CSV</button>
+          </div>
         {% else %}
           <div class="score">
             <span class="pill">Ready</span>
@@ -90,11 +118,85 @@
             <div>Submit a transaction to calculate the fraud probability</div>
           </div>
           <p class="empty">Start with a prior fraud rate and mark the suspicious patterns that apply to the transaction.</p>
+          <div class="download-row" id="download">
+            <button type="button" class="ghost" id="downloadSampleBtn">Download sample input CSV</button>
+          </div>
         {% endif %}
       </aside>
     </div>
 
+    <section class="info-grid" id="method">
+      <article class="card">
+        <h2>How the Method Works</h2>
+        <p class="method-text">
+          The model starts with a prior fraud probability and updates it with evidence from selected anomalies.
+          Each active anomaly contributes a likelihood ratio:
+        </p>
+        <p class="formula">Posterior Odds = Prior Odds x Product of Likelihood Ratios</p>
+        <p class="method-text">
+          The posterior odds are converted to a final fraud probability and mapped to a risk level.
+        </p>
+      </article>
+      <article class="card">
+        <h2>Risk Levels</h2>
+        <ul class="risk-list">
+          <li><span class="dot low"></span>Low Risk: score below 35%</li>
+          <li><span class="dot medium"></span>Medium Risk: score from 35% to 69%</li>
+          <li><span class="dot high"></span>High Risk: score 70% and above</li>
+        </ul>
+      </article>
+    </section>
+
     <p class="foot">This is a lightweight demo, not a production fraud model.</p>
   </div>
+
+  <script>
+    const resultPayload = {
+      "probability": {% if result %}{{ result.probability_percent }}{% else %}null{% endif %},
+      "risk_level": {% if result %}"{{ result.risk_level }}"{% else %}null{% endif %},
+      "prior_fraud_rate": "{{ form_values.prior_fraud_rate }}",
+      "transaction_amount": "{{ form_values.transaction_amount }}",
+      "typical_amount": "{{ form_values.typical_amount }}",
+      "transaction_hour": "{{ form_values.transaction_hour }}"
+    };
+
+    function downloadFile(content, fileName) {
+      const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", fileName);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    const sampleButton = document.querySelectorAll("#downloadSampleBtn");
+    sampleButton.forEach((button) => {
+      button.addEventListener("click", () => {
+        const rows = [
+          "prior_fraud_rate,transaction_amount,typical_amount,transaction_hour,new_merchant,foreign_location,rapid_repeat,device_mismatch",
+          "2.0,320.00,95.00,13,1,0,1,0"
+        ];
+        downloadFile(rows.join("\n"), "bayesian_fraud_sample_input.csv");
+      });
+    });
+
+    const resultButton = document.getElementById("downloadResultBtn");
+    if (resultButton) {
+      resultButton.addEventListener("click", () => {
+        if (resultPayload.probability === null) {
+          return;
+        }
+        const rows = [
+          "probability_percent,risk_level,prior_fraud_rate,transaction_amount,typical_amount,transaction_hour",
+          `${resultPayload.probability},${resultPayload.risk_level},${resultPayload.prior_fraud_rate},${resultPayload.transaction_amount},${resultPayload.typical_amount},${resultPayload.transaction_hour}`
+        ];
+        downloadFile(rows.join("\n"), "bayesian_fraud_result.csv");
+      });
+    }
+  </script>
 </body>
 </html>
