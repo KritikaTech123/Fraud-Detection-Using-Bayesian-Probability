@@ -4,9 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bayesian Fraud Detector</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -209,6 +206,20 @@
         submitBtn.disabled = true;
       });
     }
+
+    const clickTargets = document.querySelectorAll("h1, h2, p, a, span, label, th, td, li");
+    const textColors = ["#0f766e", "#1d4ed8", "#b45309", "#9333ea", "#b91c1c", "#166534"];
+    clickTargets.forEach((element) => {
+      element.classList.add("text-clickable");
+      element.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const randomColor = textColors[Math.floor(Math.random() * textColors.length)];
+        element.style.color = randomColor;
+        element.classList.remove("text-click-animate");
+        void element.offsetWidth;
+        element.classList.add("text-click-animate");
+      });
+    });
   </script>
 </body>
 </html>

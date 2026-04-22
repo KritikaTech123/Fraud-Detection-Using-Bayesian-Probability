@@ -22,8 +22,9 @@ html {
 
 body {
   margin: 0;
-  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   color: var(--ink);
+  text-align: center;
   background:
     radial-gradient(circle at 8% 12%, rgba(14, 116, 144, 0.18), transparent 30%),
     radial-gradient(circle at 88% 2%, rgba(202, 138, 4, 0.2), transparent 28%),
@@ -51,7 +52,7 @@ body {
 }
 
 .brand {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 1.1rem;
   text-decoration: none;
   color: var(--brand-2);
@@ -89,7 +90,7 @@ body {
 }
 
 .eyebrow {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   font-weight: 700;
@@ -98,7 +99,7 @@ body {
 }
 
 h1 {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   margin: 8px auto 0;
   font-size: clamp(2rem, 5vw, 4rem);
   line-height: 0.98;
@@ -162,7 +163,7 @@ h1 {
 
 .card h2 {
   margin: 0 0 14px;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 1.28rem;
 }
 
@@ -188,6 +189,7 @@ input[type="number"] {
   background: #fff;
   color: var(--ink);
   font-size: 1rem;
+  text-align: center;
 }
 
 .checks {
@@ -199,7 +201,8 @@ input[type="number"] {
 .check {
   display: flex;
   gap: 10px;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   padding: 12px 14px;
   border: 1px solid rgba(14, 116, 144, 0.15);
   border-radius: 14px;
@@ -228,7 +231,7 @@ button {
   background: linear-gradient(120deg, var(--brand), var(--brand-2));
   color: #fff;
   font-weight: 800;
-  font-family: "Manrope", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   cursor: pointer;
   box-shadow: 0 12px 24px rgba(14, 116, 144, 0.24);
   transition: transform 180ms ease;
@@ -314,7 +317,7 @@ button.is-loading .btn-text {
 
 .score strong {
   display: block;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 2.6rem;
   line-height: 1;
   margin-bottom: 8px;
@@ -340,7 +343,7 @@ table {
 th,
 td {
   padding: 12px 10px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid rgba(14, 116, 144, 0.15);
   vertical-align: top;
   font-size: 0.95rem;
@@ -367,7 +370,7 @@ th {
 }
 
 .formula {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 1.06rem;
   color: #0f766e;
   border-left: 4px solid #0f766e;
@@ -385,8 +388,30 @@ th {
 .risk-list li {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 9px;
   font-weight: 700;
+}
+
+.text-clickable {
+  cursor: pointer;
+  transition: color 220ms ease, transform 220ms ease;
+}
+
+.text-click-animate {
+  animation: click-pop 260ms ease;
+}
+
+@keyframes click-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .dot {
