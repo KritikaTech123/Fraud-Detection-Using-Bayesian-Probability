@@ -2,6 +2,10 @@
 
 A small Flask web app that estimates the probability of fraud with Bayes' theorem.
 
+## Live Demo
+
+https://bayesian-fraud-detector.onrender.com/
+
 ## Project Layout
 
 - `app.py` launches the Flask app.
